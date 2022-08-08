@@ -34,7 +34,7 @@ def add(update, context):
 def delete(update, context):
     arg = context.args
     if not arg:
-        context.bot.send_message(update.effective_chat.id, "Введи ФИО удаляемого контакта:")
+        context.bot.send_message(update.effective_chat.id, "Введи данные удаляемого контакта, можно несколько букв:")
         status.insert(0, 'del_cont')
     else:
         context.bot.send_message(update.effective_chat.id, "Не понял сейчас")
@@ -46,7 +46,7 @@ def message(update, context):
     if text.lower() == 'привет':
         context.bot.send_message(update.effective_chat.id, 'Привет! Я работаю с телефонным справочником. Для работы используй команды:\
         \n/contacts - просмотр контактов\n/add - добавление контакта\n/delete - удаление контакта\n/change - изменение контакта')
-    elif text.lower() != 'привет' and status != []: #[0] == 'cont_adding':
+    elif text.lower() != 'привет' and status != []:
         if status[0] == 'cont_adding':
             res = change.write_data_one_string(text)
             if res == '1':
@@ -60,10 +60,22 @@ def message(update, context):
             status.clear()
         elif status[0] == 'del_cont':
             res = change.delete_contact(text)
-            if res == '1':
-                context.bot.send_message(update.effective_chat.id, 'Контакт деактивирован.')
+            print(res)
+            if res == '':
+                context.bot.send_message(update.effective_chat.id, 'Контакт не найден')
             else:
-                context.bot.send_message(update.effective_chat.id, 'Контакт не найден.')
+                context.bot.send_message(update.effective_chat.id, f'Найдены контакты:\n {res}')
+                context.bot.send_message(update.effective_chat.id, 'Введи ID кого будем удалять:')
+                status[0] = 'del_id'
+        elif status[0] == 'del_id':
+            res = change.delete_id(text)
+            if res == '1':
+                context.bot.send_message(update.effective_chat.id, 'Контакт удален')
+            else:
+                context.bot.send_message(update.effective_chat.id, 'Контакт не найден')
+
+
+            status.clear()
     else:
         context.bot.send_message(update.effective_chat.id, 'я тебя не понимаю')
         

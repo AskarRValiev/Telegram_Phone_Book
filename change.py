@@ -15,6 +15,11 @@ import read_book
 #     return [id, name, surname, middlename, phone, comment]
 
 def write_data_one_string(data):
+    '''
+    Принимает строку с данными, проверяет на предмет совпадения ID, номера телефона с имеющимися в файле 
+    и полнотой вводимых данных, если все в порядке - записывает в телефонную книгу и возвращает код '1',
+    в противном случае возвращает код ошибки 
+    '''
     coinc = read_book.test_contact('phones.txt', data)
     if coinc != 'good':
         return coinc
@@ -25,25 +30,48 @@ def write_data_one_string(data):
  
 
 def delete_contact(name: str):
-    
+    '''
+    Принимает данные контакта, любая последовательность символов, возвращает все совпадения.
+    '''
     with open('phones.txt', 'r', encoding='utf-8') as file:
+        s = ''
         while True:
-            line = file.read()
-            print(line)
-            if name in line:
-                print('deact')
-                file.close()
-                return '1'
-            else: 
-                with open ('temp.txt', 'a', encoding='utf-8') as temp:
-                    temp = temp.write(line)
-                    print('not')
-            if not line:
+            ln = file.readline()
+            if name in ln:   
+                s += ln         #проверить, может зря удалил \n!!!
+            if not ln:
                 break
+    return s
             
+def delete_id(num: str):
+    '''
+    Принимает ID контакта который необходимо удалить, находит в исходном файле, создает временный фал, куда сохраняет
+    не удаляемые контакты, после формирования не удаляемых файлов перезаписывает их в исходный файл.
+    '''
+    res = '-1'
+    tmp = open('temp.txt', 'w', encoding='utf-8')
+    tmp.close()
 
+    with open('phones.txt', 'r', encoding='utf-8') as file:
+        ln = file.readlines()
+        for i, item in enumerate(ln):
+            s = ln[i].split()
+            if s[0] != num:
+                with open('temp.txt', 'a', encoding='utf-8') as tmp:
+                    tmp.write(' '.join(s) + '\n')       
+            else: res = '1'
 
-delete_contact('Кондомский')
+    with open('temp.txt', 'r', encoding='utf-8') as tmp:
+        lns = tmp.readlines()
+    with open('phones.txt', 'w', encoding='utf-8') as file:
+        file.write(' '.join(lns))
+    print(res)
+    return res
+
+                    
+
+   
+#delete_id('4')
 
     
 
