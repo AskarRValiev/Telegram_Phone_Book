@@ -26,6 +26,7 @@ def test_contact(file_path: str, contact: str):
             try:
                 line = file.readline()
                 line_temp = line.split()
+              
                 if line_temp == []:
                     return 'good'
                 elif cont_temp[0] == line_temp[0]:

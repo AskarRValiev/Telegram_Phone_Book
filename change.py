@@ -1,18 +1,5 @@
 import read_book
 
-# ввод данных пользователем и запись в файл
-
-
-# def add_contact():  
-#     id = input('введите номер id')                    
-#     name = input('Имя: ')
-#     surname = input('Фамилия: ')
-#     middlename = input ('Отчество: ')
-#     phone = input('Номер телефона: ')
-#     comment = input('Комментарий: ')
-#     data = [id, name, surname, middlename, phone, comment]
-#     write_data_one_string(data)
-#     return [id, name, surname, middlename, phone, comment]
 
 def write_data_one_string(data):
     '''
@@ -26,9 +13,10 @@ def write_data_one_string(data):
     else:
         with open('phones.txt', 'a', encoding= 'utf-8') as file:
             file.write(data +'\n')
+            file.close()
             return '1'
  
-
+#*********************************************************
 def delete_contact(name: str):
     '''
     Принимает данные контакта, любая последовательность символов, возвращает все совпадения.
@@ -38,15 +26,16 @@ def delete_contact(name: str):
         while True:
             ln = file.readline()
             if name in ln:   
-                s += ln         #проверить, может зря удалил \n!!!
+                s += ln
             if not ln:
                 break
     return s
-            
+
+#**********************************************
 def delete_id(num: str):
     '''
-    Принимает ID контакта который необходимо удалить, находит в исходном файле, создает временный фал, куда сохраняет
-    не удаляемые контакты, после формирования не удаляемых файлов перезаписывает их в исходный файл.
+    Принимает ID контакта который необходимо удалить, находит в исходном файле, создает временный файл, куда сохраняет
+    не удаляемые контакты, после формирования файла перезаписывает его в исходный файл.
     '''
     res = '-1'
     tmp = open('temp.txt', 'w', encoding='utf-8')
@@ -65,44 +54,50 @@ def delete_id(num: str):
         lns = tmp.readlines()
     with open('phones.txt', 'w', encoding='utf-8') as file:
         file.write(' '.join(lns))
-    print(res)
+    return res
+#********************************************************
+
+def chng_id(name: str):
+    '''
+    Принимает ID контакта который необходимо изменить, находит в исходном файле, создает временный файл, куда сохраняет
+    не изменяемые  и измененный контакты, после формирования файла перезаписывает его в исходный файл.
+    '''
+    res = '-1'
+    tmp = open('temp.txt', 'w', encoding='utf-8')
+    tmp.close()
+    dt = name.split()
+    print(dt)
+    with open('phones.txt', 'r', encoding='utf-8') as file:
+        ln = file.readlines()
+        for i, item in enumerate(ln):
+            s = ln[i].split()
+            if s[0] != dt[0]:
+                with open('temp.txt', 'a', encoding='utf-8') as tmp:
+                    tmp.write(' '.join(s) + '\n') 
+            else:
+                if dt[1] == 'фамилия'.lower():
+                    s[1] = dt[2]
+                elif dt[1] == 'имя'.lower():      
+                    s[2] = dt[2]
+                elif dt[1] == 'отчество'.lower():      
+                    s[3] = dt[2]
+                else:   
+                    s[4] = dt[2]
+                with open('temp.txt', 'a', encoding='utf-8') as tmp:
+                    tmp.write(' '.join(s) + '\n') 
+
+    with open('temp.txt', 'r', encoding='utf-8') as tmp:
+        lns = tmp.readlines()
+    with open('phones.txt', 'w', encoding='utf-8') as file:
+        file.write(' '.join(lns))
+        file.close()
+        res = '1'
     return res
 
-                    
 
-   
-#delete_id('4')
-
-    
+#chng_id('3 фамилия Хорошев')
 
 
-
-
-
-
-# def write_data_dif_string(data):
-#     with open('phones.txt', 'a') as file:
-#         #for each in data:
-#         file.write(data)
-#         file.write('\n')
-#             #file.write()
-
-
-
-# def delete_contact():
-#          self.loadAll()
-
-#          entry_to_delete = input("Введите имя контакта: ")
-#          if entry_to_delete in self.phonebook.keys():
-#              del self.phonebook[entry_to_delete]
-#              file = open(self.phones.txt, 'w')
-#              for name, number in self.phonebook.items():
-#                  string = name + '\t' + number + '\n'
-#                  file.write(string)
-#              file.close()
-#              print("Контакт удален успешно")
-#          else:
-#              print("Контакт не найден")
 
 
 
